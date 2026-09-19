@@ -1,4 +1,4 @@
-const CACHE_NAME = 'scout-futsal-v2-2-1';
+const CACHE_NAME = 'scout-futsal-v2-2-3';
 
 const APP_SHELL = [
   './',
