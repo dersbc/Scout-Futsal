@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-<title>Scout Futsal V2.2</title>
+<title>Scout Futsal V2.2.3</title>
 <meta name="theme-color" content="#0d1117">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -767,6 +767,7 @@ hr{border:0;border-top:1px solid var(--border);margin:12px 0}
 .goal-sequence-row.our{border-left:3px solid #1f8f4e}.goal-sequence-row.opp{border-left:3px solid #c94747}
 .goal-sequence-score{font-size:18px;font-weight:800;text-align:center}.goal-sequence-row.our .goal-sequence-score{color:#2fbf6b}.goal-sequence-row.opp .goal-sequence-score{color:#ef6464}
 .goal-sequence-period,.goal-sequence-time{color:var(--muted);text-align:center}.goal-sequence-scorer{font-weight:700}
+.goal-sequence-quartet{display:block;margin-top:3px;color:var(--muted);font-size:10px;font-weight:600;line-height:1.25}
 .goal-sequence-empty{text-align:center;color:var(--muted);font-size:12px;padding:7px}
 @media(max-width:600px){.goal-sequence-row{grid-template-columns:60px 78px 60px 1fr;gap:5px;padding:7px 6px;font-size:10px}.goal-sequence-score{font-size:16px}}
 .report-quick-grid{grid-template-columns:repeat(5,minmax(0,1fr))}
@@ -1014,7 +1015,7 @@ hr{border:0;border-top:1px solid var(--border);margin:12px 0}
 <body>
 <div class="app">
   <div class="topbar">
-    <div class="brand">⚽ Scout Futsal V2.2</div>
+    <div class="brand">⚽ Scout Futsal V2.2.3</div>
     <div class="badge" id="saveStatus">salvamento local ativo</div>
   </div>
 
@@ -2763,7 +2764,10 @@ function renderReport(){
    if(isOpp)seqAgainst++; else seqFor++;
    const p=S.players.find(x=>x.id===e.playerId);
    const scorer=e.meta?.ownGoal==='favor'?'Gol contra — adversário':e.meta?.ownGoal==='contra'?'Gol contra — nossa equipe':(isOpp?(S.match.opponent||'Adversário'):(p?`#${p.num} ${p.nickname||p.name||'Jogador'}`:'Nossa equipe'));
-   return `<div class="goal-sequence-row ${isOpp?'opp':'our'}"><div class="goal-sequence-score">${seqFor}–${seqAgainst}</div><div class="goal-sequence-period">${e.period||1}º tempo</div><div class="goal-sequence-time">${fmt(e.clock||0)}</div><div class="goal-sequence-scorer">${scorer}</div></div>`;
+   // V2.2.2 — reutiliza a formação já salva no próprio evento do gol; goleiro não entra no quarteto.
+   const quartet=(e.onCourt||[]).map(id=>S.players.find(pp=>pp.id===id)).filter(pp=>pp&&!isGK(pp)).map(pp=>`#${pp.num} ${pp.nickname||pp.name||'Jogador'}`).join(' • ');
+   const quartetLine=quartet?`<span class="goal-sequence-quartet">Quarteto: ${quartet}</span>`:`<span class="goal-sequence-quartet">Quarteto não identificado</span>`;
+   return `<div class="goal-sequence-row ${isOpp?'opp':'our'}"><div class="goal-sequence-score">${seqFor}–${seqAgainst}</div><div class="goal-sequence-period">${e.period||1}º tempo</div><div class="goal-sequence-time">${fmt(e.clock||0)}</div><div class="goal-sequence-scorer">${scorer}${quartetLine}</div></div>`;
  }).join(''):'<div class="goal-sequence-empty">Nenhum gol registrado.</div>';
  quickSummaryReport.innerHTML=
    qcard('Finalização',ourShots,'q-shot')+
@@ -2851,12 +2855,19 @@ function renderReport(){
  individualPlayerSelect.innerHTML=S.players.map(p=>`<option value="${p.id}">#${p.num} ${fullName(p)} — ${roleLabel(p.role)}</option>`).join('');
  renderIndividualReport();
 
- let qgf=0,qgs=0; const qGoals=[...S.events].reverse().filter(e=>{const l=e.label||'';return l==='Gol feito (+ finalização em gol)'||/Bola parada .* — Gol/.test(l)||l.includes('Finalização em gol — Gol')||l==='Gol sofrido'||e.meta?.ownGoal}); quartetGoalSequence.innerHTML=qGoals.length?qGoals.map(e=>{const opp=e.kind==='opp'||e.label==='Gol sofrido';opp?qgs++:qgf++;const nums=(e.onCourt||[]).map(id=>S.players.find(p=>p.id===id)).filter(p=>p&&!isGK(p)).map(p=>'#'+p.num).join(' • ');return `<div class="goal-sequence-row ${opp?'opp':'our'}"><div class="goal-sequence-score">${opp?qgs+'º gol':qgf+'º gol'}</div><div class="goal-sequence-period">${e.period||1}ºT</div><div class="goal-sequence-time">${fmt(e.clock||0)}</div><div class="goal-sequence-scorer">${nums||'Quarteto não identificado'}</div></div>`}).join(''):'<div class="goal-sequence-empty">Nenhum gol registrado.</div>';
+ // V2.2.3 — padroniza a identificação dos quartetos com número + nome/apelido.
+ const quartetPlayerLabel=p=>p?`#${p.num} ${displayName(p)}`:'';
+ const quartetKeyLabel=k=>String(k||'').split('-').filter(Boolean).map(num=>{
+  const p=S.players.find(x=>String(x.num)===String(num));
+  return p?quartetPlayerLabel(p):`#${num}`;
+ }).join(' • ');
+
+ let qgf=0,qgs=0; const qGoals=[...S.events].reverse().filter(e=>{const l=e.label||'';return l==='Gol feito (+ finalização em gol)'||/Bola parada .* — Gol/.test(l)||l.includes('Finalização em gol — Gol')||l==='Gol sofrido'||e.meta?.ownGoal}); quartetGoalSequence.innerHTML=qGoals.length?qGoals.map(e=>{const opp=e.kind==='opp'||e.label==='Gol sofrido';opp?qgs++:qgf++;const players=(e.onCourt||[]).map(id=>S.players.find(p=>p.id===id)).filter(p=>p&&!isGK(p)).map(quartetPlayerLabel).join(' • ');return `<div class="goal-sequence-row ${opp?'opp':'our'}"><div class="goal-sequence-score">${opp?qgs+'º gol':qgf+'º gol'}</div><div class="goal-sequence-period">${e.period||1}ºT</div><div class="goal-sequence-time">${fmt(e.clock||0)}</div><div class="goal-sequence-scorer">${players||'Quarteto não identificado'}</div></div>`}).join(''):'<div class="goal-sequence-empty">Nenhum gol registrado.</div>';
  quartetReport.innerHTML=`<tr><th>Quarteto</th><th>Tempo</th><th>GF</th><th>GS</th><th>Saldo</th><th>GF/10min</th><th>GS/10min</th><th>Saldo/10min</th></tr>`+
  Object.entries(S.quartets).sort((a,b)=>b[1].seconds-a[1].seconds).map(([k,q])=>{
   const factor=q.seconds?600/q.seconds:0;
   const bal=q.gf-q.gs;
-  return `<tr><td>${k||'—'}</td><td>${fmt(q.seconds)}</td><td>${q.gf}</td><td>${q.gs}</td><td>${bal>=0?'+':''}${bal}</td><td>${fmtNum(q.gf*factor)}</td><td>${fmtNum(q.gs*factor)}</td><td>${fmtNum(bal*factor)}</td></tr>`
+  return `<tr><td>${quartetKeyLabel(k)||'—'}</td><td>${fmt(q.seconds)}</td><td>${q.gf}</td><td>${q.gs}</td><td>${bal>=0?'+':''}${bal}</td><td>${fmtNum(q.gf*factor)}</td><td>${fmtNum(q.gs*factor)}</td><td>${fmtNum(bal*factor)}</td></tr>`
  }).join('');
 
  renderTimelineReport();
@@ -3084,11 +3095,11 @@ function editHistoryMatchInfo(id){
  populateHistoryFilters();renderSeason();
 }
 
-// V2.2 — PWA / acesso permanente. Segurança e gerenciamento dos dados herdados da V2.1.
+// V2.2.3 — quartetos identificados por número + nome/apelido no relatório. PWA e segurança herdadas da V2.2.1.
 function scoutBackupPayload(){
  return {
    app:'Scout Futsal',
-   version:'2.2',
+   version:'2.2.2',
    createdAt:new Date().toISOString(),
    data:{
      clubRoster:JSON.parse(localStorage.getItem(CLUB_ROSTER_KEY)||'[]'),
