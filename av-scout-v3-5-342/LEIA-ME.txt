@@ -1,9 +1,13 @@
-AV SCOUT V3.5.342 — TESTE DE INSTALAÇÃO
+AV SCOUT V3.5.342 — pacote de instalação de teste
 
-Esta pasta contém os arquivos de teste para instalar o AV SCOUT na tela inicial do tablet.
+ATENÇÃO: publicar em endereço/domínio SEPARADO do aplicativo antigo.
+Não publicar por cima do Worker de produção, nem em caminho dentro da mesma origem.
+O localStorage é compartilhado por origem e o AV SCOUT utiliza a chave scoutFutsalV18.
 
-A versão estável deve ser preservada.
+Arquivos do pacote: index.html, manifest.webmanifest, sw.js, icon-192.png, icon-512.png.
+Enviar os cinco arquivos à raiz de uma hospedagem HTTPS independente.
+Depois abrir a URL no Chrome do tablet e escolher Instalar aplicativo/Adicionar à tela inicial.
 
-Não substituir a versão principal nem apagar dados de partidas.
-
-Testar o funcionamento e o ícone antes de aprovar a instalação definitiva.
+O HTML original foi mantido; apenas link do manifesto, ícone e escopo explícito do SW foram acrescentados à cópia.
+O service worker deste pacote não apaga caches de outros aplicativos.
+Não apagar dados do Chrome, desinstalar aplicativo antigo nem substituir produção.
