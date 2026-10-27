@@ -1686,7 +1686,7 @@ Coletivo, Quartetos, cálculos, Histórico, PDF e impressão permanecem inaltera
 <body>
 <div class="app">
   <div class="topbar">
-    <div class="brand">AV SCOUT V3.5.322</div>
+    <div class="brand">AV SCOUT V3.5.342</div>
     <div class="badge" id="saveStatus">salvamento local ativo</div>
   </div>
 
@@ -6208,7 +6208,7 @@ background-position:center!important;background-size:154px 32px!important;
 </style>
 <script id="av-v3537-stable-title">
 (function(){
-  const TITLE='AV SCOUT V3.5.322 — Retoques de tradução';
+  const TITLE='AV SCOUT V3.5.342 — Retoques de tradução';
   function lockTitle(){ document.title=TITLE; }
   lockTitle();
   document.addEventListener('DOMContentLoaded',lockTitle);
@@ -9273,7 +9273,7 @@ Este patch substitui somente a fonte de cálculo do bloco do tablet.
       const pt=sourcePT.get(node), wanted=es?fromPT(pt):pt;
       if(node.nodeValue!==wanted)node.nodeValue=wanted;
     }
-    document.title='AV SCOUT V3.5.322 — Retoques de tradução';
+    document.title='AV SCOUT V3.5.342 — Retoques de tradução';
   }
   let queued=false;
   function queue(){if(queued)return;queued=true;setTimeout(()=>{queued=false;apply206();},30);}
@@ -10124,14 +10124,14 @@ window.AV_JOGADORES_ES_257={apply:apply257};
   fix();
 })();
 </script>
-<script id="av-v35312-title-only">(function(){const t='AV SCOUT V3.5.322 — Retoques de tradução';function fix(){if(document.title!==t)document.title=t;}fix();window.addEventListener('pageshow',fix);window.addEventListener('load',()=>setTimeout(fix,2200));})();</script>
+<script id="av-v35312-title-only">(function(){const t='AV SCOUT V3.5.342 — Retoques de tradução';function fix(){if(document.title!==t)document.title=t;}fix();window.addEventListener('pageshow',fix);window.addEventListener('load',()=>setTimeout(fix,2200));})();</script>
 
 <!-- V3.5.313: revisão visual dos rótulos do relatório individual. -->
 <script id="av-v35313-individual-labels">
 (function(){
   const translations = [
-    [/INFORME COLECTIVO(?:\s+V\d+(?:\.\d+)*)?/gi, 'INFORME DEL PARTIDO V3.5.322'],
-    [/RELATÓRIO COLETIVO(?:\s+V\d+(?:\.\d+)*)?/gi, 'INFORME DEL PARTIDO V3.5.322'],
+    [/INFORME COLECTIVO(?:\s+V\d+(?:\.\d+)*)?/gi, 'INFORME DEL PARTIDO V3.5.342'],
+    [/RELATÓRIO COLETIVO(?:\s+V\d+(?:\.\d+)*)?/gi, 'INFORME DEL PARTIDO V3.5.342'],
     [/ZONAS DE FINALIZAÇÃO/gi, 'ZONAS DE DISPARO'],
     [/ROBO DE BALÓNS/gi, 'Robo de balón'],
     [/ROBO DE BALONS/gi, 'Robo de balón'],
@@ -10165,7 +10165,7 @@ window.AV_JOGADORES_ES_257={apply:apply257};
 </style>
 <script id="av-v35314-version-label">
 (function(){
- const title='AV SCOUT V3.5.322 — Retoques de tradução';
+ const title='AV SCOUT V3.5.342 — Retoques de tradução';
  function fix(){if(document.title!==title)document.title=title;}
  fix();document.addEventListener('DOMContentLoaded',fix);window.addEventListener('load',fix);window.addEventListener('pageshow',fix);
  const obs=new MutationObserver(fix);
@@ -16769,7 +16769,7 @@ window.addEventListener('load',function(){document.title='AV SCOUT V3.5.153 — 
     var es=lang()==='es', w=document.createTreeWalker(r,NodeFilter.SHOW_TEXT,{acceptNode:function(n){var p=n.parentElement;if(!p||p.closest('script,style,.av-language-box'))return NodeFilter.FILTER_REJECT;return NodeFilter.FILTER_ACCEPT;}}), a=[],n;
     while(n=w.nextNode())a.push(n); a.forEach(function(x){one(x,es);});
   }
-  function title(){document.title='AV SCOUT V3.5.322 — Retoques de tradução';}
+  function title(){document.title='AV SCOUT V3.5.342 — Retoques de tradução';}
   function settle(){title();apply();[50,150,350,700,1200,2000,3500].forEach(function(t){setTimeout(function(){title();apply();},t);});}
   title(); window.addEventListener('load',settle); window.addEventListener('pageshow',settle);
   document.addEventListener('visibilitychange',function(){if(!document.hidden)settle();});
